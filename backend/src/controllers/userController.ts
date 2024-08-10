@@ -3,13 +3,19 @@ import { withAccelerate } from '@prisma/extension-accelerate'
 import { PrismaClient } from '@prisma/client/edge'
 import { sign } from "hono/jwt";
 import bcrypt from 'bcryptjs'
-
-
-
+import { signinInput, signupInput } from "@saradhipardha/medium-common";
 
 
 export const signup = async (c: Context) => {
-        const body = await c.req.json()
+        const body = await c.req.json();
+    const { success } = signupInput.safeParse(body)
+    if(!success) {
+        c.status(411);
+        return c.json({
+            message: "Inputs not correct"
+        })
+    }
+
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
         }).$extends(withAccelerate())
@@ -25,6 +31,7 @@ export const signup = async (c: Context) => {
                             message:"user already existss"
                         })
                 }
+                // return res.status(411).json({})
 
                     const hashedPassword = await bcrypt.hash(body.password,10);
                      const user = await prisma.user.create({
@@ -51,6 +58,15 @@ export const signup = async (c: Context) => {
 
 export const signin = async (c: Context) => {
     const body = await c.req.json()
+
+    const { success }  = signinInput.safeParse(body);
+        if(!success) {
+            c.status(411)
+            c.json({
+                message:"Inputs not correct"
+            })
+        }
+
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate())

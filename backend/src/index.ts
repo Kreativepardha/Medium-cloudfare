@@ -1,7 +1,9 @@
 import { Hono } from 'hono'
 import { mainRouter } from './routes/indexRouter'
-import { PrismaClient } from '@prisma/client/edge';
-import { withAccelerate } from '@prisma/extension-accelerate';
+import { cors } from 'hono/cors';
+
+
+
 
 const app = new Hono<{
   Bindings: {
@@ -13,6 +15,7 @@ const app = new Hono<{
   }
 }>()
 
+app.use("/*", cors())
 app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
