@@ -20,6 +20,7 @@ interface BlogState {
     loading:boolean;
     fetchBlogs: () => Promise<void>;
     fetchBlogById: (id: string) => void;
+    createBlog: (title: string, content: string) => Promise<Blog>
 }
 
 
@@ -62,7 +63,20 @@ set({loading:false})
                 console.error("error while fetching the blog", err)
                 set ({ loading:false})
             }
-        }
+        },
+    createBlog: async(title, content) =>{ 
+        const storedToken = localStorage.getItem("token")
+        const token = storedToken ? JSON.parse(storedToken) : "" ;
+        const response = await axios.post(`${BACKEND_URL}/blog`, {
+            title,
+            content
+        }, {
+            headers: {
+                Authorization: token
+            }
+        });
+        return response.data;
+    }, 
 
 
 

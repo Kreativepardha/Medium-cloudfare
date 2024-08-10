@@ -49,7 +49,7 @@ return <div className="flex justify-center items-center h-screen bg-gray-200 bg-
     <BlogCard
     key={id}
       id={blog.id}
-      authorName={blog.author?.name || "Unknown Author"}
+      authorName={blog.author?.name  || "Unknown Author"}
       title={blog.title}
       content={blog.content}
       publishedDate={new Date(blog.id).toLocaleDateString()}
